@@ -1,5 +1,7 @@
 package com.mns.asyncscale.service;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.stereotype.Service;
 
 import com.mns.asyncscale.dto.SimRequestDTO;
@@ -17,8 +19,9 @@ public class SimService {
 
     public SimResponseDTO runSimService(SimRequestDTO payload) {
 
+        runSim.start(payload);
+
         SimResponseDTO res = new SimResponseDTO("Started!");
-        runSim.start();
         return res;
 
     }
