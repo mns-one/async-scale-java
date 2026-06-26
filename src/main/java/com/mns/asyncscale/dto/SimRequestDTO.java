@@ -9,14 +9,19 @@ public class SimRequestDTO {
 
     @NotNull
     @Min(1)
-    private Integer size;
+    private Integer packetSize;
 
     @NotNull
     @Min(1)
-    private Integer interval;
+    private Integer seedInterval;
 
     @NotNull
     @Min(1)
-    private Integer target;
+    private Integer totalPackets;
+
+    @NotNull
+    @Min(1)
+    private Integer processTarget;
     
 }
+
