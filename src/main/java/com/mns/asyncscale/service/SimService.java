@@ -1,7 +1,5 @@
 package com.mns.asyncscale.service;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.springframework.stereotype.Service;
 
 import com.mns.asyncscale.dto.SimRequestDTO;
@@ -26,5 +24,4 @@ public class SimService {
 
     }
 
-    
 }
