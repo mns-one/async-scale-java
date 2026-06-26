@@ -100,11 +100,11 @@ public class State {
     
     // snapshot
     public synchronized StateSnapshot getSnapshot() {
-        return new StateSnapshot(packetSize, seedInterval, totalPackets,
+        return new StateSnapshot(clientId, packetSize, seedInterval, totalPackets,
             availableJobs, inProcessJobs, completedJobs, processTarget, seederStatus, activeWorkers, stopToken);
     }
 
-    public record StateSnapshot(int packetSize, int seedInterval, int totalPackets,
+    public record StateSnapshot(String clientId, int packetSize, int seedInterval, int totalPackets,
                                 int availableJobs, int inProcessJobs, int completedJobs,
                                 int processTarget, boolean seederStatus, int activeWorkers, int stopToken){}
     

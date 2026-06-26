@@ -1,6 +1,7 @@
 package com.mns.asyncscale.simulation;
 
 import com.mns.asyncscale.websocket.TelemetryHandler;
+import com.mns.asyncscale.websocket.TelemetryRecord;
 
 public class Scaler implements Runnable {
 
@@ -30,8 +31,11 @@ public class Scaler implements Runnable {
 
             State.StateSnapshot snapshot = state.getSnapshot();
             System.out.println("Available_Jobs = " + snapshot.availableJobs() + " || Running_Workers = " + snapshot.activeWorkers());
-
+            
             int totalJobs = snapshot.availableJobs() + snapshot.inProcessJobs();
+            
+            TelemetryRecord telemetryRecord = new TelemetryRecord(totalJobs, snapshot.activeWorkers(), snapshot.completedJobs());
+            telemetryHandler.broadcast(snapshot.clientId(), telemetryRecord);
 
             int desired = 0;
 
@@ -54,7 +58,6 @@ public class Scaler implements Runnable {
                 int tokens = Math.abs(diff);
                 state.addStopTokens(tokens);
             }
-
 
             Thread.sleep(500);
 
