@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.ObjectMapper;
 
 
 @Slf4j
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TelemetryHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -27,8 +29,7 @@ public class TelemetryHandler extends TextWebSocketHandler {
             session.close(CloseStatus.BAD_DATA.withReason("Client ID missing"));
             return;
         }
-        if(isUserConnected(clientId) || hasActiveConnection()){
-            session.close(CloseStatus.POLICY_VIOLATION.withReason("Wait for another simulation to end"));
+        if(isUserConnected(clientId)){
             return;
         }
         sessions.put(clientId, session);
@@ -47,20 +48,22 @@ public class TelemetryHandler extends TextWebSocketHandler {
         log.info("User Disconnected! {}", clientId);
     }
 
-    public void broadcast(String message) {
+    public void broadcast(String clientId, TelemetryRecord message) {
 
-        for (Map.Entry<String, WebSocketSession> clientSession : sessions.entrySet()) {
+        WebSocketSession clientSession = sessions.get(clientId);
+        if(clientSession == null){
+            return;
+        }
 
-            if (clientSession.getValue().isOpen()) {
-                try {
-                    clientSession.getValue().sendMessage(
-                        new TextMessage(message)
-                    );
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        if (clientSession.isOpen()) {
+            try {
+                String json = objectMapper.writeValueAsString(message);
+                clientSession.sendMessage(new TextMessage(json));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+
     }
 
     public boolean isUserConnected(String clientID) {

@@ -19,7 +19,7 @@ public class SimService {
 
         runSim.start(payload);
 
-        SimResponseDTO res = new SimResponseDTO("Started!");
+        SimResponseDTO res = new SimResponseDTO("Initialized Simulation");
         return res;
 
     }
