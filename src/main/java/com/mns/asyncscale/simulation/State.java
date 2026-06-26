@@ -1,11 +1,6 @@
 package com.mns.asyncscale.simulation;
 
-import org.springframework.stereotype.Component;
 
-import lombok.Data;
-
-@Component
-@Data
 public class State {
 
     private int packetSize;
@@ -18,9 +13,12 @@ public class State {
 
     private int processTarget;
 
-    private boolean seederActive;
+    private int activeWorkers;
+    private int stopToken;
 
-    public void setState(int packetSize, int seedInterval, int totalPackets, int processTarget) {
+    private boolean seederStatus;
+
+    public State(int packetSize, int seedInterval, int totalPackets, int processTarget) {
         this.packetSize = packetSize;
         this.seedInterval = seedInterval;
         this.totalPackets = totalPackets;
@@ -28,16 +26,26 @@ public class State {
         this.availableJobs = 0;
         this.inProcessJobs = 0;
         this.completedJobs = 0;
+        this.activeWorkers = 0;
+        this.stopToken = 0;
+        this.seederStatus = false;
     }
 
-    public synchronized void setAvailableJobs(int newJobs) {
-        this.availableJobs = newJobs;
+    // job inflow methods
+    public synchronized void seederRunning() {
+        this.seederStatus = true;
     }
 
-    public synchronized int getAvailableJobs() {
-        return this.availableJobs;
+    public synchronized void seederStopped() {
+        this.seederStatus = false;
     }
 
+    public synchronized boolean jobInflow() {
+        return this.seederStatus || this.availableJobs > 0;
+    }
+
+
+    // job count methods
     public synchronized void addAvailableJobs(int count) {
         this.availableJobs += count;
     }
@@ -45,8 +53,54 @@ public class State {
     public synchronized void removeAvailableJobs(int count) {
         this.availableJobs -= count;
     }
+
+
+    // worker methods
+    public synchronized void addStopTokens(int count) {
+        this.stopToken += count;
+    }
+
+    public synchronized boolean shouldStop() {
+        if(this.stopToken > 0) {
+            this.stopToken--;
+            this.activeWorkers--;
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public synchronized boolean claimJob() {
+        if(this.availableJobs > 0){
+            this.availableJobs--;
+            this.inProcessJobs++;
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public synchronized void finishJob() {
+        this.inProcessJobs--;
+        this.completedJobs++;
+    }
+
+    public synchronized void addActiveWorkers(int count) {
+        this.activeWorkers += count;
+    }
+
+    
+    // snapshot
+    public synchronized StateSnapshot getSnapshot() {
+        return new StateSnapshot(packetSize, seedInterval, totalPackets,
+            availableJobs, inProcessJobs, completedJobs, processTarget, seederStatus, activeWorkers, stopToken);
+    }
+
+    public record StateSnapshot(int packetSize, int seedInterval, int totalPackets,
+                                int availableJobs, int inProcessJobs, int completedJobs,
+                                int processTarget, boolean seederStatus, int activeWorkers, int stopToken){}
     
 
 }
-
-// make snapshot method

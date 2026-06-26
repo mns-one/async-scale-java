@@ -9,35 +9,34 @@ import com.mns.asyncscale.websocket.TelemetryHandler;
 public class RunSim {
 
     private final TelemetryHandler telemetry;
-    private State state;
-    private SeedDb seedDb;
-    private Scaler scaler;
 
-    RunSim(TelemetryHandler telemetry, SeedDb seedDb, State state, Scaler scaler) {
+    RunSim(TelemetryHandler telemetry) {
         this.telemetry = telemetry;
-        this.seedDb = seedDb;
-        this.state = state;
-        this.scaler = scaler;
     }
 
     public void start(SimRequestDTO payload) {
         telemetry.broadcast("Starting Sim...");
         System.out.println("Initializing Sim...");
         
-        state.setState(payload.getPacketSize(), payload.getSeedInterval(), payload.getTotalPackets(), payload.getProcessTarget());
+        // create sim state obj and pass to seeder and scaler
+        State state = new State(
+            payload.getPacketSize(),
+            payload.getSeedInterval(),
+            payload.getTotalPackets(),
+            payload.getProcessTarget()
+        );
 
-        Thread seederThread = new Thread(seedDb);
+        Seeder seeder = new Seeder(state);
+        Thread seederThread = new Thread(seeder);
         seederThread.start();
 
+        Scaler scaler = new Scaler(state);
         Thread scalerThread = new Thread(scaler);
         scalerThread.start();
 
         System.out.println("Initializing Complete!");
 
-        // start scaler.java
-
     }
 
 }
 
- 
