@@ -1,12 +1,17 @@
 package com.mns.asyncscale.simulation;
 
+import com.mns.asyncscale.websocket.TelemetryHandler;
 
 public class Scaler implements Runnable {
 
     private State state;
+    private final Manager manager;
+    private final TelemetryHandler telemetryHandler;
 
-    public Scaler(State state) {
+    public Scaler(State state, Manager manager, TelemetryHandler telemetryHandler) {
         this.state = state;
+        this.manager = manager;
+        this.telemetryHandler = telemetryHandler;
     }
 
     public void run() {
@@ -49,11 +54,13 @@ public class Scaler implements Runnable {
                 int tokens = Math.abs(diff);
                 state.addStopTokens(tokens);
             }
-            
+
 
             Thread.sleep(500);
 
         }
+
+        manager.stopClient(state.getClientId());
 
         System.out.println("Scaler stopped!");
 

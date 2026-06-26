@@ -8,6 +8,9 @@ import lombok.Data;
 public class SimRequestDTO {
 
     @NotNull
+    private String clientId;
+
+    @NotNull
     @Min(1)
     private Integer packetSize;
 

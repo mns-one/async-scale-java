@@ -3,6 +3,7 @@ package com.mns.asyncscale.simulation;
 
 public class State {
 
+    private String clientId;
     private int packetSize;
     private int seedInterval;
     private int totalPackets;
@@ -18,7 +19,8 @@ public class State {
 
     private boolean seederStatus;
 
-    public State(int packetSize, int seedInterval, int totalPackets, int processTarget) {
+    public State(String clientId, int packetSize, int seedInterval, int totalPackets, int processTarget) {
+        this.clientId = clientId;
         this.packetSize = packetSize;
         this.seedInterval = seedInterval;
         this.totalPackets = totalPackets;
@@ -29,6 +31,10 @@ public class State {
         this.activeWorkers = 0;
         this.stopToken = 0;
         this.seederStatus = false;
+    }
+
+    public String getClientId() {
+        return this.clientId;
     }
 
     // job inflow methods
