@@ -31,8 +31,11 @@ public class Manager {
         data.getScaler().start();
     }
 
-    public void createClient(String clientId) {
-
+    public void shutdownClientSim(String clientId) {
+        if(clientExists(clientId)){
+            ClientData data = clients.get(clientId);
+            data.getState().triggerShutdown();
+        }
     }
 
 }
