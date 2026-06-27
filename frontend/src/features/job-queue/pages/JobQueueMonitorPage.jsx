@@ -73,6 +73,9 @@ export default function JobQueueMonitorPage() {
           10 Job batches of size upto {size} will arrive at an interval of max {interval_} second <br/>
           Server will scale workers to process {target}% of pending jobs
         </div>
+        <div style={styles.simLine}>
+          Each Job processing has I/O delay of upto 5 seconds
+        </div>
 
         <hr style={styles.sep} />
 
