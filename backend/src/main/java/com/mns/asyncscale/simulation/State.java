@@ -48,8 +48,8 @@ public class State {
         this.seederStatus = false;
     }
 
-    public synchronized boolean jobInflow() {
-        return this.seederStatus || this.availableJobs > 0;
+    public synchronized boolean jobsLeft() {
+        return this.seederStatus || this.availableJobs > 0 || this.activeWorkers > 0;
     }
 
     public synchronized void setNewJobs(int count) {

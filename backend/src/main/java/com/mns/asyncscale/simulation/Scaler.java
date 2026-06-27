@@ -28,15 +28,13 @@ public class Scaler implements Runnable {
         System.out.println("Scaler running...");
         int packetCount = 0;
 
-        while(state.jobInflow()){
+        while(state.jobsLeft()){
             State.StateSnapshot snapshot = state.getSnapshot();
             // System.out.println("Available_Jobs = " + snapshot.availableJobs() + " || Running_Workers = " + snapshot.activeWorkers());
             
             int totalJobs = snapshot.availableJobs() + snapshot.inProcessJobs();
             
-            TelemetryDTO telemetryDTO = new TelemetryDTO(packetCount, System.currentTimeMillis(),
-                    totalJobs, snapshot.activeWorkers(), snapshot.completedJobs(), snapshot.newJobs());
-            telemetryHandler.broadcast(snapshot.clientId(), telemetryDTO);
+            sendTelemetry(snapshot, totalJobs, packetCount);
 
             int desired = 0;
 
@@ -65,9 +63,22 @@ public class Scaler implements Runnable {
 
         }
 
+        State.StateSnapshot snapshot = state.getSnapshot();
+        int totalJobs = snapshot.availableJobs() + snapshot.inProcessJobs();     
+        sendTelemetry(snapshot, totalJobs, packetCount);
+
         manager.stopClient(state.getClientId());
 
         System.out.println("Scaler stopped!");
+
+    }
+
+    public void sendTelemetry(State.StateSnapshot snapshot, int totalJobs, int packetCount) {
+
+        TelemetryDTO telemetryDTO = new TelemetryDTO(packetCount, System.currentTimeMillis(),
+                    totalJobs, snapshot.activeWorkers(), snapshot.completedJobs(), snapshot.newJobs());
+
+        telemetryHandler.broadcast(snapshot.clientId(), telemetryDTO);
 
     }
     
