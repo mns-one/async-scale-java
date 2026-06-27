@@ -10,14 +10,16 @@ import { LiveChart } from "../components/LiveChart";
 
 export default function JobQueueMonitorPage() {
   const [clientId] = useState(() => uuid());
-  const [size, setSize] = useState(200);
-  const [interval_, setInterval_] = useState(3);
-  const [target, setTarget] = useState(40);
+  const [size, setSize] = useState(500);
+  const [interval_, setInterval_] = useState(4);
+  const [count, setCount] = useState(10);
+  const [target, setTarget] = useState(35);
 
   const { canvasRef, resetChart, pushPoint } = useLiveChart();
   const session = useJobQueueSession({
     clientId,
     size,
+    count,
     interval_,
     target,
     onBeforeStart: resetChart,
@@ -50,9 +52,11 @@ export default function JobQueueMonitorPage() {
         <ConfigForm
           clientId={clientId}
           size={size}
+          count={count}
           interval_={interval_}
           target={target}
           onSizeChange={(e) => setSize(Number(e.target.value))}
+          onCountChange={(e) => setCount(Number(e.target.value))}
           onIntervalChange={(e) => setInterval_(Number(e.target.value))}
           onTargetChange={(e) => setTarget(Number(e.target.value))}
         />
