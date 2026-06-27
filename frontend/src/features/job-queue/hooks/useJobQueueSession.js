@@ -85,7 +85,6 @@ export function useJobQueueSession({ clientId, size, interval_, target, onBefore
         const workers = Number(merged.active_workers);
 
         if (Number.isFinite(jobs) && Number.isFinite(workers)) {
-          //console.log(pkt.sq, jobs, workers);
           onDataPoint(pkt.seq, jobs, workers);
         }
       } catch {
