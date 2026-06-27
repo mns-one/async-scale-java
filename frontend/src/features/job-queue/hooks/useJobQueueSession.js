@@ -8,7 +8,7 @@ const EMPTY_STATS = {
   new_jobs: null,
 };
 
-export function useJobQueueSession({ clientId, size, interval_, target, onBeforeStart, onDataPoint }) {
+export function useJobQueueSession({ clientId, size, count, interval_, target, onBeforeStart, onDataPoint }) {
   const [status, setStatus] = useState("");
   const [statusTxt, setStatusTxt] = useState("Not connected");
   const [stats, setStats] = useState(null);
@@ -48,7 +48,7 @@ export function useJobQueueSession({ clientId, size, interval_, target, onBefore
       setStatus("connecting");
       setStatusTxt("Connected - sending config...");
       try {
-        const res = await postSessionConfig({ clientId, size, interval_, target });
+        const res = await postSessionConfig({ clientId, size, count, interval_, target });
         if (res.ok) {
           setStatus("live");
           setStatusTxt("Live");
