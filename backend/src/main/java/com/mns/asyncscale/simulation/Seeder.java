@@ -33,6 +33,8 @@ public class Seeder implements Runnable {
             int newJobs = 1 + (int) (Math.random() * packetSize);
             state.addAvailableJobs(newJobs);
             System.out.println("Jobs added -> " + newJobs);
+            state.setNewJobs(newJobs);
+
             Thread.sleep(1 + (long) (Math.random() * seedInterval));
         }
 
