@@ -1,5 +1,6 @@
 package com.mns.asyncscale.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mns.asyncscale.dto.SimRequestDTO;
@@ -10,7 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class SimController {
 
@@ -27,8 +28,5 @@ public class SimController {
         
         return res;
     }
-    
-
-
     
 }

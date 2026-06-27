@@ -9,6 +9,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import com.mns.asyncscale.dto.TelemetryDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
@@ -48,7 +49,7 @@ public class TelemetryHandler extends TextWebSocketHandler {
         log.info("User Disconnected! {}", clientId);
     }
 
-    public void broadcast(String clientId, TelemetryRecord message) {
+    public void broadcast(String clientId, TelemetryDTO message) {
 
         WebSocketSession clientSession = sessions.get(clientId);
         if(clientSession == null){

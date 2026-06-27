@@ -8,6 +8,7 @@ public class State {
     private int seedInterval;
     private int totalPackets;
 
+    private int newJobs;
     private int availableJobs;
     private int inProcessJobs;
     private int completedJobs;
@@ -25,6 +26,7 @@ public class State {
         this.seedInterval = seedInterval;
         this.totalPackets = totalPackets;
         this.processTarget = processTarget;
+        this.newJobs = 0;
         this.availableJobs = 0;
         this.inProcessJobs = 0;
         this.completedJobs = 0;
@@ -50,6 +52,9 @@ public class State {
         return this.seederStatus || this.availableJobs > 0;
     }
 
+    public synchronized void setNewJobs(int count) {
+        this.newJobs = count;
+    }
 
     // job count methods
     public synchronized void addAvailableJobs(int count) {
@@ -101,11 +106,11 @@ public class State {
     // snapshot
     public synchronized StateSnapshot getSnapshot() {
         return new StateSnapshot(clientId, packetSize, seedInterval, totalPackets,
-            availableJobs, inProcessJobs, completedJobs, processTarget, seederStatus, activeWorkers, stopToken);
+            newJobs, availableJobs, inProcessJobs, completedJobs, processTarget, seederStatus, activeWorkers, stopToken);
     }
 
     public record StateSnapshot(String clientId, int packetSize, int seedInterval, int totalPackets,
-                                int availableJobs, int inProcessJobs, int completedJobs,
+                                int newJobs, int availableJobs, int inProcessJobs, int completedJobs,
                                 int processTarget, boolean seederStatus, int activeWorkers, int stopToken){}
     
 

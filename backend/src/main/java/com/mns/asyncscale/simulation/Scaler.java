@@ -1,7 +1,7 @@
 package com.mns.asyncscale.simulation;
 
 import com.mns.asyncscale.websocket.TelemetryHandler;
-import com.mns.asyncscale.websocket.TelemetryRecord;
+import com.mns.asyncscale.dto.TelemetryDTO;
 
 public class Scaler implements Runnable {
 
@@ -26,16 +26,17 @@ public class Scaler implements Runnable {
     public void start() throws InterruptedException {
 
         System.out.println("Scaler running...");
+        int packetCount = 0;
 
         while(state.jobInflow()){
-
             State.StateSnapshot snapshot = state.getSnapshot();
-            System.out.println("Available_Jobs = " + snapshot.availableJobs() + " || Running_Workers = " + snapshot.activeWorkers());
+            // System.out.println("Available_Jobs = " + snapshot.availableJobs() + " || Running_Workers = " + snapshot.activeWorkers());
             
             int totalJobs = snapshot.availableJobs() + snapshot.inProcessJobs();
             
-            TelemetryRecord telemetryRecord = new TelemetryRecord(totalJobs, snapshot.activeWorkers(), snapshot.completedJobs());
-            telemetryHandler.broadcast(snapshot.clientId(), telemetryRecord);
+            TelemetryDTO telemetryDTO = new TelemetryDTO(packetCount, System.currentTimeMillis(),
+                    totalJobs, snapshot.activeWorkers(), snapshot.completedJobs(), snapshot.newJobs());
+            telemetryHandler.broadcast(snapshot.clientId(), telemetryDTO);
 
             int desired = 0;
 
@@ -60,6 +61,7 @@ public class Scaler implements Runnable {
             }
 
             Thread.sleep(500);
+            packetCount++;
 
         }
 
