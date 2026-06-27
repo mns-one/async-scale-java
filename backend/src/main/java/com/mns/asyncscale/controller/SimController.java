@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mns.asyncscale.dto.SimRequestDTO;
 import com.mns.asyncscale.dto.SimResponseDTO;
+import com.mns.asyncscale.dto.SimStopRequestDTO;
 import com.mns.asyncscale.service.SimService;
 
 import jakarta.validation.Valid;
@@ -27,6 +28,13 @@ public class SimController {
         SimResponseDTO res = simService.runSimService(req);
         
         return res;
+    }
+
+    @PostMapping("/stop")
+    public void stopSim(@Valid @RequestBody SimStopRequestDTO req) {
+        
+        simService.stopSimService(req);
+        
     }
     
 }

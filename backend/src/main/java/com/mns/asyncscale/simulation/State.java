@@ -19,6 +19,7 @@ public class State {
     private int stopToken;
 
     private boolean seederStatus;
+    private boolean shutdown;
 
     public State(String clientId, int packetSize, int seedInterval, int totalPackets, int processTarget) {
         this.clientId = clientId;
@@ -33,6 +34,11 @@ public class State {
         this.activeWorkers = 0;
         this.stopToken = 0;
         this.seederStatus = false;
+        this.shutdown = false;
+    }
+
+    public void triggerShutdown() {
+        this.shutdown = true;
     }
 
     public String getClientId() {
@@ -106,12 +112,12 @@ public class State {
     // snapshot
     public synchronized StateSnapshot getSnapshot() {
         return new StateSnapshot(clientId, packetSize, seedInterval, totalPackets,
-            newJobs, availableJobs, inProcessJobs, completedJobs, processTarget, seederStatus, activeWorkers, stopToken);
+            newJobs, availableJobs, inProcessJobs, completedJobs, processTarget, seederStatus, activeWorkers, stopToken, shutdown);
     }
 
     public record StateSnapshot(String clientId, int packetSize, int seedInterval, int totalPackets,
                                 int newJobs, int availableJobs, int inProcessJobs, int completedJobs,
-                                int processTarget, boolean seederStatus, int activeWorkers, int stopToken){}
+                                int processTarget, boolean seederStatus, int activeWorkers, int stopToken, boolean shutdown){}
     
 
 }

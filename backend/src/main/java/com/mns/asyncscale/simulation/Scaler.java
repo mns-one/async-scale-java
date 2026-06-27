@@ -30,6 +30,10 @@ public class Scaler implements Runnable {
 
         while(state.jobsLeft()){
             State.StateSnapshot snapshot = state.getSnapshot();
+            if(snapshot.shutdown()) {
+                stopWorkers();
+                break;
+            }
             // System.out.println("Available_Jobs = " + snapshot.availableJobs() + " || Running_Workers = " + snapshot.activeWorkers());
             
             int totalJobs = snapshot.availableJobs() + snapshot.inProcessJobs();
@@ -70,6 +74,17 @@ public class Scaler implements Runnable {
         manager.stopClient(state.getClientId());
 
         System.out.println("Scaler stopped!");
+
+    }
+
+    public void stopWorkers() throws InterruptedException {
+
+        while(true){
+            State.StateSnapshot snapshot = state.getSnapshot();
+            if(snapshot.activeWorkers() == 0) break;
+            state.addStopTokens(snapshot.activeWorkers());
+            Thread.sleep(1000);
+        }
 
     }
 

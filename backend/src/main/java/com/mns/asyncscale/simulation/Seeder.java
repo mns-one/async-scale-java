@@ -30,12 +30,17 @@ public class Seeder implements Runnable {
         int seedInterval = snapshot.seedInterval();
 
         for(int i=0; i<totalPackets; i++) {
+
+            State.StateSnapshot snapshot_check_shutdown = state.getSnapshot();
+            if(snapshot_check_shutdown.shutdown()) break;
+
             int newJobs = 1 + (int) (Math.random() * packetSize);
             state.addAvailableJobs(newJobs);
             System.out.println("Jobs added -> " + newJobs);
             state.setNewJobs(newJobs);
 
             Thread.sleep(1 + (long) (Math.random() * seedInterval));
+
         }
 
         System.out.println("Seeder stopped!");
