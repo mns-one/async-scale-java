@@ -16,6 +16,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     }
 
     @Override
+    // websocket endpoint to establish connection
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(telemetryHandler, "/telemetry")
                 .setAllowedOrigins("*");

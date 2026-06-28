@@ -19,6 +19,8 @@ import tools.jackson.databind.ObjectMapper;
 @Component
 public class TelemetryHandler extends TextWebSocketHandler {
 
+    // class to maintain active socket connections and broadcast messages
+
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
 

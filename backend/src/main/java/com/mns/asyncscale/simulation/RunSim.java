@@ -6,6 +6,7 @@ import com.mns.asyncscale.dto.SimRequestDTO;
 import com.mns.asyncscale.exception.CustomException;
 import com.mns.asyncscale.websocket.TelemetryHandler;
 
+
 @Component
 public class RunSim {
 
@@ -19,13 +20,15 @@ public class RunSim {
 
     public void start(SimRequestDTO payload) { 
 
+        // return early if one instance is already running for client
         if(manager.clientExists(payload.getClientId())){
-            throw new CustomException("Simulation already running for clientId: " + payload.getClientId());
+            System.out.println("Instance already running for ClientId - " + payload.getClientId());
+            return;
         }
 
         System.out.println("Initializing Sim for clientId: " + payload.getClientId());
         
-        // create sim state obj and pass to seeder and scaler
+        // create simulation State obj and Seeder, Scaler threads and store them in ClientData
         State state = new State(
             payload.getClientId(),
             payload.getPacketSize(),
@@ -42,6 +45,7 @@ public class RunSim {
 
         ClientData clientData = new ClientData(state, seederThread, scalerThread);
 
+        // add clientData to Manager and trigger the simulation instance
         manager.addClient(payload.getClientId(), clientData);
         manager.startClient(payload.getClientId());
 

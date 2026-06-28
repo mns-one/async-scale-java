@@ -13,9 +13,7 @@ public class StopSim {
     }
 
     public void shutdown(String clientId) {
-
         manager.shutdownClientSim(clientId);
-
     }
 
 }

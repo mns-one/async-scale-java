@@ -22,7 +22,7 @@ public class Seeder implements Runnable {
 
     public void start() throws InterruptedException {
 
-        // for loop that adds packetSize to available_jobs after every time_interval
+        // for loop that adds packetSize to available_jobs after every seedInterval
         State.StateSnapshot snapshot = state.getSnapshot();
 
         int totalPackets = snapshot.totalPackets();
@@ -31,9 +31,11 @@ public class Seeder implements Runnable {
 
         for(int i=0; i<totalPackets; i++) {
 
+            // check for shutdown flag before each iteration
             State.StateSnapshot snapshot_check_shutdown = state.getSnapshot();
             if(snapshot_check_shutdown.shutdown()) break;
 
+            // add new jobs to state and sleep
             int newJobs = 1 + (int) (Math.random() * packetSize);
             state.addAvailableJobs(newJobs);
             System.out.println("Jobs added -> " + newJobs);
