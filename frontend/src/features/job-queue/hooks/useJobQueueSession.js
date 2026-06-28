@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { createSessionSocket, postSessionConfig } from "../services/jobQueueApi";
+import { createSessionSocket, postSessionConfig, postSessionStop } from "../services/jobQueueApi";
 
 const EMPTY_STATS = {
   jobs_to_process: null,
@@ -20,6 +20,7 @@ export function useJobQueueSession({ clientId, size, count, interval_, target, o
   const lastStatsRef = useRef(EMPTY_STATS);
 
   const stopSession = useCallback(() => {
+    const res = postSessionStop(clientId);
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -54,12 +55,13 @@ export function useJobQueueSession({ clientId, size, count, interval_, target, o
           setStatusTxt("Live");
           setRunning(true);
         } else {
+          const err = await res.json();
           setStatus("err");
-          setStatusTxt(`POST error ${res.status}`);
+          setStatusTxt(`Server Error`);
         }
       } catch {
         setStatus("err");
-        setStatusTxt("POST failed - is backend running?");
+        setStatusTxt("POST failed - backend not reachable");
       }
     };
 
