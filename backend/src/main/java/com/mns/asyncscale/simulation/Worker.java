@@ -19,10 +19,11 @@ public class Worker implements Runnable {
 
     public void start() throws InterruptedException {
 
+        // check for exit flag before claiming new jobs
         while(!state.shouldStop()) {
 
             if(state.claimJob()){
-                // IO delay
+                // simulate IO delay for processing after claiming a job
                 Thread.sleep(1 + (long) (Math.random() * 5000));
                 state.finishJob();
             }

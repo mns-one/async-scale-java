@@ -26,20 +26,24 @@ public class Scaler implements Runnable {
     public void start() throws InterruptedException {
 
         System.out.println("Scaler running...");
-        int packetCount = 0;
+        int packetCount = 0; // sequence counter for sending telemetry packets
 
         while(state.jobsLeft()){
+
             State.StateSnapshot snapshot = state.getSnapshot();
+
+            // check for shutdown flag before each iteration
             if(snapshot.shutdown()) {
                 stopWorkers();
                 break;
             }
             // System.out.println("Available_Jobs = " + snapshot.availableJobs() + " || Running_Workers = " + snapshot.activeWorkers());
             
+            // broadcast current state of simulation
             int totalJobs = snapshot.availableJobs() + snapshot.inProcessJobs();
-            
             sendTelemetry(snapshot, totalJobs, packetCount);
 
+            // calcuate number of workers needed to maintain defined target
             int desired = 0;
 
             if (totalJobs > 0) {
@@ -49,6 +53,7 @@ public class Scaler implements Runnable {
 
             int diff = desired - snapshot.activeWorkers();
 
+            // create more workers if needed
             if(diff > 0) {
                 for(int i=0; i<diff; i++){
                     state.addActiveWorkers(1);
@@ -57,6 +62,7 @@ public class Scaler implements Runnable {
                     workerThread.start();
                 }
             }
+            // else raise flag for worker threads to exit
             else if(diff < 0) {
                 int tokens = Math.abs(diff);
                 state.addStopTokens(tokens);
@@ -67,16 +73,19 @@ public class Scaler implements Runnable {
 
         }
 
+        // broadcast final state after loop ends
         State.StateSnapshot snapshot = state.getSnapshot();
         int totalJobs = snapshot.availableJobs() + snapshot.inProcessJobs();     
         sendTelemetry(snapshot, totalJobs, packetCount);
 
+        // remove client entry from Manager
         manager.stopClient(state.getClientId());
 
         System.out.println("Scaler stopped!");
 
     }
 
+    // let currently active workers finish first after shutodwn trigger mid execution
     public void stopWorkers() throws InterruptedException {
 
         while(true){

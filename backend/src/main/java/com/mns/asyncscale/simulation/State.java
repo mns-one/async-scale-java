@@ -3,24 +3,26 @@ package com.mns.asyncscale.simulation;
 
 public class State {
 
-    private String clientId;
-    private int packetSize;
-    private int seedInterval;
-    private int totalPackets;
+    private String clientId;           // unique identifier for each connected client
 
-    private int newJobs;
-    private int availableJobs;
-    private int inProcessJobs;
-    private int completedJobs;
+    private int packetSize;            // max number of jobs added by one Seeder loop
+    private int seedInterval;          // max Seeder thread sleep time between every loop
+    private int totalPackets;          // number of times Seeder loop will execute to add jobs
 
-    private int processTarget;
+    private int newJobs;               // number of jobs added by Seeder most recently
+    private int availableJobs;         // jobs queued up for processing
+    private int inProcessJobs;         // jobs claimed by workers and currently under process
+    private int completedJobs;         // finished jobs
 
-    private int activeWorkers;
-    private int stopToken;
+    private int processTarget;         // target % reference for Scaler to scale workers
 
-    private boolean seederStatus;
-    private boolean shutdown;
+    private int activeWorkers;         // counter for currently active worker threads
+    private int stopToken;             // flag for requesting a worker thread to exit
 
+    private boolean seederStatus;      // flag to check for job inflow
+    private boolean shutdown;          // flag to trigger graceful shutdown of simulation instance
+
+    
     public State(String clientId, int packetSize, int seedInterval, int totalPackets, int processTarget) {
         this.clientId = clientId;
         this.packetSize = packetSize;
