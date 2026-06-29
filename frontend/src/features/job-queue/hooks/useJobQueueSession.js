@@ -56,10 +56,13 @@ export function useJobQueueSession({ clientId, size, count, interval_, target, o
           setStatus("live");
           setStatusTxt("Live");
           setRunning(true);
-        } else {
+        }
+        else
+        {
           const err = await res.json();
+          const message = err.message || err.error || "Unknown error";
           setStatus("err");
-          setStatusTxt(`Server Error`);
+          setStatusTxt(`Server Error - ${message}`);
         }
       } catch {
         setStatus("err");
@@ -107,7 +110,7 @@ export function useJobQueueSession({ clientId, size, count, interval_, target, o
       setStatusTxt("Disconnected");
       setRunning(false);
     };
-  }, [clientId, size, interval_, target, onBeforeStart, onDataPoint]);
+  }, [clientId, size, count, interval_, target, onBeforeStart, onDataPoint]);
 
   return {
     status,
