@@ -1,6 +1,6 @@
 package com.mns.asyncscale.simulation;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class Manager {
 
     // using clientId as key for easy access to each clients simulation instance data
-    private HashMap<String, ClientData> clients = new HashMap<>();
+    private ConcurrentHashMap<String, ClientData> clients = new ConcurrentHashMap<>();
     private final int MAX_CONCURRENT_SIMULATIONS = 3;
 
     // check if simulation already running for client
