@@ -33,5 +33,7 @@ build/
 .vscode/
 
 .env
-.vite/
+.vite
 .env.*
+.vite/
+.vite/deps
