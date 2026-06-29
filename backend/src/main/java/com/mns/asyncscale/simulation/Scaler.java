@@ -80,6 +80,7 @@ public class Scaler implements Runnable {
 
         // remove client entry from Manager
         manager.stopClient(state.getClientId());
+        telemetryHandler.disconnectClient(snapshot.clientId());
 
         System.out.println("Scaler stopped!");
 

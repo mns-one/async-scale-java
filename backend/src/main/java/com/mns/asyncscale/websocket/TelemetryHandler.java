@@ -51,6 +51,22 @@ public class TelemetryHandler extends TextWebSocketHandler {
         log.info("User Disconnected! {}", clientId);
     }
 
+    public void disconnectClient(String clientId) {
+        WebSocketSession clientSession = sessions.get(clientId);
+
+        if (clientSession == null) {
+            return;
+        }
+
+        try {
+            clientSession.close();
+        } catch (IOException e) {
+            log.error("Failed to close websocket", e);
+        } finally {
+            sessions.remove(clientId);
+        }
+    }
+
     public void broadcast(String clientId, TelemetryDTO message) {
 
         WebSocketSession clientSession = sessions.get(clientId);

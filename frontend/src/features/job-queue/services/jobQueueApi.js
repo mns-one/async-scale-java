@@ -18,3 +18,12 @@ export function createSessionSocket(clientId) {
   return new WebSocket(`${BASE_WS}/telemetry?${clientId}`);
 }
 
+export async function postSessionStop(clientId) {
+  return fetch(`${BASE_HTTP}/stop`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      "clientId": clientId,
+    }),
+  });
+}
