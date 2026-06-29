@@ -21,9 +21,11 @@ export function useJobQueueSession({ clientId, size, count, interval_, target, o
 
   const stopSession = useCallback(() => {
     const res = postSessionStop(clientId);
-    if (wsRef.current) {
-      wsRef.current.close();
-      wsRef.current = null;
+    if(wsRef.current){
+      setStatusTxt("Gracefully Shuting down simulation...");
+    }
+    else {
+      setStatusTxt("Disconnected");
     }
   }, []);
 
