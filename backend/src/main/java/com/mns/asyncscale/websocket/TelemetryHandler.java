@@ -3,6 +3,8 @@ package com.mns.asyncscale.websocket;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -23,6 +25,7 @@ public class TelemetryHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ExecutorService telemetryExecutor = Executors.newSingleThreadExecutor();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -52,6 +55,10 @@ public class TelemetryHandler extends TextWebSocketHandler {
     }
 
     public void disconnectClient(String clientId) {
+        telemetryExecutor.execute(() -> closeClientSession(clientId));
+    }
+
+    private void closeClientSession(String clientId) {
         WebSocketSession clientSession = sessions.get(clientId);
 
         if (clientSession == null) {
@@ -67,7 +74,12 @@ public class TelemetryHandler extends TextWebSocketHandler {
         }
     }
 
-    public void broadcast(String clientId, TelemetryDTO message) {
+    // add telemetry broadcast request to queue and return immediately
+    public void broadcastAsync(String clientId, TelemetryDTO message) {
+        telemetryExecutor.execute(() -> broadcast(clientId, message));
+    }
+
+    private void broadcast(String clientId, TelemetryDTO message) {
 
         WebSocketSession clientSession = sessions.get(clientId);
         if(clientSession == null){

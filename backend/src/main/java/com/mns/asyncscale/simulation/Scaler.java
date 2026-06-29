@@ -103,7 +103,7 @@ public class Scaler implements Runnable {
         TelemetryDTO telemetryDTO = new TelemetryDTO(packetCount, System.currentTimeMillis(),
                     totalJobs, snapshot.activeWorkers(), snapshot.completedJobs(), snapshot.newJobs());
 
-        telemetryHandler.broadcast(snapshot.clientId(), telemetryDTO);
+        telemetryHandler.broadcastAsync(snapshot.clientId(), telemetryDTO);
 
     }
     
