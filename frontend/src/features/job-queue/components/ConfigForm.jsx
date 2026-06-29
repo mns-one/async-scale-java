@@ -22,9 +22,9 @@ export function ConfigForm({ clientId, size, count, interval_, target, onSizeCha
 
       <div style={styles.field}>
         <label style={styles.label}>
-          Arrival Interval <span style={{ opacity: 0.6 }}>(2-10 seconds)</span>
+          Arrival Interval <span style={{ opacity: 0.6 }}>(2-20 seconds)</span>
         </label>
-        <input style={styles.input} type="number" min={2} max={10} step={1} value={interval_} onChange={onIntervalChange} />
+        <input style={styles.input} type="number" min={2} max={20} step={1} value={interval_} onChange={onIntervalChange} />
       </div>
 
       <div style={styles.field}>

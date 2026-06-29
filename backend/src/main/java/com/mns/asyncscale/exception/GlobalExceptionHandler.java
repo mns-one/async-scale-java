@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 "Validation Failed",
-                "Request validation failed",
+                "Invalid input parameters",
                 fieldErrors
         );
 
