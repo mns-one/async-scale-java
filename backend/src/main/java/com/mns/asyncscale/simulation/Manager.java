@@ -10,10 +10,15 @@ public class Manager {
 
     // using clientId as key for easy access to each clients simulation instance data
     private HashMap<String, ClientData> clients = new HashMap<>();
+    private final int MAX_CONCURRENT_SIMULATIONS = 3;
 
     // check if simulation already running for client
     public boolean clientExists(String clientId) {
         return clients.containsKey(clientId);
+    }
+
+    public boolean serverAtMaxCapacity() {
+        return clients.size() >= MAX_CONCURRENT_SIMULATIONS;
     }
 
     public void addClient(String clientId, ClientData data) {

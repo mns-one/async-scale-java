@@ -26,6 +26,10 @@ public class RunSim {
             return;
         }
 
+        if(manager.serverAtMaxCapacity()) {
+            throw new CustomException("Server running at max capacity, try again later");
+        }
+
         System.out.println("Initializing Sim for clientId: " + payload.getClientId());
         
         // create simulation State obj and Seeder, Scaler threads and store them in ClientData
