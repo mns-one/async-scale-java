@@ -1,6 +1,7 @@
 # Async Scale
 - A distributed job queue simulation platform that models dynamic worker auto-scaling under varying workloads
 - It provides real-time telemetry through WebSockets and an interactive dashboard to visualize queue behavior, worker utilization, and scaling decisions
+
 ![Dashboard](./assets/dashboard_ui.png)
 
 # Installation
