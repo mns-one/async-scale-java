@@ -70,6 +70,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<ErrorResponseDTO> handleRateLimitExceeded(RateLimitExceededException ex) {
+
+        log.warn("Rate limit exceeded: {}", ex.getMessage());
+
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                "Too Many Requests",
+                ex.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(response);
+    }
+
     // default error handler
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGeneric(Exception ex) {
