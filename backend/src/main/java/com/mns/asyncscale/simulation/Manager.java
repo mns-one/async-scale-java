@@ -2,6 +2,7 @@ package com.mns.asyncscale.simulation;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -10,7 +11,11 @@ public class Manager {
 
     // using clientId as key for easy access to each clients simulation instance data
     private ConcurrentHashMap<String, ClientData> clients = new ConcurrentHashMap<>();
-    private final int MAX_CONCURRENT_SIMULATIONS = 3;
+    private final int MAX_CONCURRENT_SIMULATIONS;
+
+    public Manager(@Value("${simulation.max.concurrent.instance}") int maxSimulationInstance) {
+        MAX_CONCURRENT_SIMULATIONS = maxSimulationInstance;
+    }
 
     // check if simulation already running for client
     public boolean clientExists(String clientId) {

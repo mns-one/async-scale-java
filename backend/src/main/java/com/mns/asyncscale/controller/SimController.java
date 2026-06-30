@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${allowed.origins}")
 @RestController
 public class SimController {
 
