@@ -3,6 +3,7 @@ package com.mns.asyncscale.rateLimiter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -10,11 +11,21 @@ import org.springframework.stereotype.Component;
 public class RateLimiterService {
 
     private ConcurrentHashMap<String, Bucket> buckets = new ConcurrentHashMap<>();
-    private final long MAX_WINDOW_TIME_MILLIS = 60 * 1000; //  1 minute
-    private final int MAX_USAGE = 2;
+    
+    private final long MAX_WINDOW_TIME_MILLIS;
+    private final int MAX_USAGE;
 
     private long lastCleanup = 0;
-    private final long CLEANUP_INTERVAL_MILLIS = 60 * 1000;
+    private final long CLEANUP_INTERVAL_MILLIS;;
+
+    public RateLimiterService(@Value("${rate.limit.window.size.millis}") long maxWindowTimeMillis,
+                            @Value("${rate.limit.max.usage}") int maxUsage,
+                            @Value("${rate.limit.cleanup.interval.millis}") long cleanupIntervalMillis)
+    {
+        MAX_WINDOW_TIME_MILLIS = maxWindowTimeMillis;
+        MAX_USAGE = maxUsage;
+        CLEANUP_INTERVAL_MILLIS = cleanupIntervalMillis;
+    }
 
     public boolean allowed(String clientId) {
 

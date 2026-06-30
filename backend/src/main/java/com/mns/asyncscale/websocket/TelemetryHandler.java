@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -27,7 +28,11 @@ public class TelemetryHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Object sessionLock = new Object();
     private final ExecutorService telemetryExecutor = Executors.newSingleThreadExecutor();
-    private final int MAX_CONCURRENT_SOCKETS = 10;
+    private final int MAX_CONCURRENT_SOCKETS;
+
+    public TelemetryHandler(@Value("${websocket.max.active.socket}") int maxActiveSockets) {
+        MAX_CONCURRENT_SOCKETS = maxActiveSockets;
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
