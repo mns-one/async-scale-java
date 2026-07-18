@@ -3,6 +3,10 @@ package com.mns.asyncscale.simulation;
 import com.mns.asyncscale.websocket.TelemetryHandler;
 import com.mns.asyncscale.dto.TelemetryDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
 public class Scaler implements Runnable {
 
     private State state;
@@ -58,8 +62,13 @@ public class Scaler implements Runnable {
                 for(int i=0; i<diff; i++){
                     state.addActiveWorkers(1);
                     Worker worker = new Worker(state);
-                    Thread workerThread = new Thread(worker);
-                    workerThread.start();
+                    try{
+                        Thread workerThread = new Thread(worker);
+                        workerThread.start();
+                    }
+                    catch(Exception e){
+                        log.error("Error creating new worker thread", e);
+                    }
                 }
             }
             // else raise flag for worker threads to exit
