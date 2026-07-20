@@ -60,11 +60,15 @@ public class Scaler implements Runnable {
             // create more workers if needed
             if(diff > 0) {
                 for(int i=0; i<diff; i++){
-                    state.addActiveWorkers(1);
                     Worker worker = new Worker(state);
                     try{
                         Thread workerThread = new Thread(worker);
                         workerThread.start();
+                        state.addActiveWorkers(1);
+                    }
+                    catch (OutOfMemoryError e) {
+                        log.error("Server out of Memory, exiting worker thread creation loop!", e);
+                        break;
                     }
                     catch(Exception e){
                         log.error("Error creating new worker thread", e);
